@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEnade.Models;
 using ProjetoEnade.Repository;
+using ProjetoEnade.Utils;
 
 namespace ProjetoEnade.Controllers
 {
@@ -20,23 +21,52 @@ namespace ProjetoEnade.Controllers
         }
 
         // GET: QuestaoGabarito
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var enadeDbContext = _context.QuestaoGabarito.Include(q => q.Provas);
-            return View(await enadeDbContext.ToListAsync());
+            var enadeDbContext = from questoes in _context.QuestaoGabarito.ToList()
+                                 join provas in _context.Provas.ToList() on questoes.IdProva equals provas.Id
+                                 join curso in _context.Cursos.ToList() on provas.IdCurso equals curso.Id
+                                 select new QuestaoGabarito
+                                 {
+                                     Id = questoes.Id,
+                                     Enunciado = questoes.Enunciado,
+                                     DescricaoTipoProva = Helpers.GetEnumDescription((Enums.TipoDaProva)questoes.TipoProva),
+                                     DescricaoDificuldadeQuestao = Helpers.GetEnumDescription((Enums.DificuldadeDaQuestao)questoes.DificuldadeQuestao),
+                                     DescricaoRespostaCorreta = Helpers.GetEnumDescription((Enums.RespostaCerta)questoes.RespostaCorreta),
+                                     DescricaoProva = $"Ano: {provas.Ano} - Curso: {curso.Nome} - Edição: {provas.Edicao}"
+                                 };
+
+            return View(enadeDbContext.ToList());
         }
 
         // GET: QuestaoGabarito/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var questaoGabarito = await _context.QuestaoGabarito
-                .Include(q => q.Provas)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var questaoGabarito = (from questoes in _context.QuestaoGabarito.ToList()
+                                   join provas in _context.Provas.ToList() on questoes.IdProva equals provas.Id
+                                   join curso in _context.Cursos.ToList() on provas.IdCurso equals curso.Id
+                                   where questoes.Id == id
+                                   select new QuestaoGabarito
+                                   {
+                                       Id = questoes.Id,
+                                       Enunciado = questoes.Enunciado,
+                                       DescricaoTipoProva = Helpers.GetEnumDescription((Enums.TipoDaProva)questoes.TipoProva),
+                                       DescricaoDificuldadeQuestao = Helpers.GetEnumDescription((Enums.DificuldadeDaQuestao)questoes.DificuldadeQuestao),
+                                       DescricaoRespostaCorreta = Helpers.GetEnumDescription((Enums.RespostaCerta)questoes.RespostaCorreta),
+                                       DescricaoProva = $"Ano: {provas.Ano} - Curso: {curso.Nome} - Edição: {provas.Edicao}",
+                                       RespostaA = questoes.RespostaA,
+                                       RespostaB = questoes.RespostaB,
+                                       RespostaC = questoes.RespostaC,
+                                       RespostaD = questoes.RespostaD,
+                                       RespostaE = questoes.RespostaE,
+                                   }).FirstOrDefault();
+
+
             if (questaoGabarito == null)
             {
                 return NotFound();
@@ -48,7 +78,15 @@ namespace ProjetoEnade.Controllers
         // GET: QuestaoGabarito/Create
         public IActionResult Create()
         {
-            ViewData["AnoProva"] = new SelectList(_context.Provas, "Id", "Ano");
+            var provas = from prova in _context.Provas.ToList()
+                         join curso in _context.Cursos.ToList() on prova.IdCurso equals curso.Id
+                         select new
+                         {
+                             Id = prova.Id,
+                             DescricaoCompleta = $"Ano: {prova.Ano} - Curso: {curso.Nome} - Edição: {prova.Edicao}"
+                         };
+
+            ViewData["DetalhesProva"] = new SelectList(provas, "Id", "DescricaoCompleta", null);
             return View();
         }
 
@@ -57,7 +95,7 @@ namespace ProjetoEnade.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdProva,Enunciado,RespostaA,RespostaB,RespostaC,RespostaD,RespostaE,RespostaCorreta,Id")] QuestaoGabarito questaoGabarito)
+        public async Task<IActionResult> Create(QuestaoGabarito questaoGabarito)
         {
             if (ModelState.IsValid)
             {
@@ -70,19 +108,48 @@ namespace ProjetoEnade.Controllers
         }
 
         // GET: QuestaoGabarito/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var questaoGabarito = await _context.QuestaoGabarito.FindAsync(id);
+            var questaoGabarito = (from questoes in _context.QuestaoGabarito.ToList()
+                                   join provas in _context.Provas.ToList() on questoes.IdProva equals provas.Id
+                                   join curso in _context.Cursos.ToList() on provas.IdCurso equals curso.Id
+                                   where questoes.Id == id
+                                   select new QuestaoGabarito
+                                   {
+                                       Id = questoes.Id,
+                                       Enunciado = questoes.Enunciado,
+                                       TipoProva = questoes.TipoProva,
+                                       DescricaoTipoProva = Helpers.GetEnumDescription((Enums.TipoDaProva)questoes.TipoProva),
+                                       DificuldadeQuestao = questoes.DificuldadeQuestao,
+                                       DescricaoDificuldadeQuestao = Helpers.GetEnumDescription((Enums.DificuldadeDaQuestao)questoes.DificuldadeQuestao),
+                                       RespostaCorreta = questoes.RespostaCorreta,
+                                       DescricaoRespostaCorreta = Helpers.GetEnumDescription((Enums.RespostaCerta)questoes.RespostaCorreta),
+                                       DescricaoProva = $"Ano: {provas.Ano} - Curso: {curso.Nome} - Edição: {provas.Edicao}",
+                                       RespostaA = questoes.RespostaA,
+                                       RespostaB = questoes.RespostaB,
+                                       RespostaC = questoes.RespostaC,
+                                       RespostaD = questoes.RespostaD,
+                                       RespostaE = questoes.RespostaE,
+                                   }).FirstOrDefault();
+
+            var provasCursos = from prova in _context.Provas.ToList()
+                               join curso in _context.Cursos.ToList() on prova.IdCurso equals curso.Id
+                               select new
+                               {
+                                   Id = prova.Id,
+                                   DescricaoCompleta = $"Ano: {prova.Ano} - Curso: {curso.Nome} - Edição: {prova.Edicao}"
+                               };
+
             if (questaoGabarito == null)
             {
                 return NotFound();
             }
-            ViewData["IdProva"] = new SelectList(_context.Provas, "Id", "Id", questaoGabarito.IdProva);
+            ViewData["DetalhesProva"] = new SelectList(provasCursos, "Id", "DescricaoCompleta", null);
             return View(questaoGabarito);
         }
 
@@ -91,7 +158,7 @@ namespace ProjetoEnade.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdProva,Enunciado,RespostaA,RespostaB,RespostaC,RespostaD,RespostaE,RespostaCorreta,Id")] QuestaoGabarito questaoGabarito)
+        public async Task<IActionResult> Edit(int id, QuestaoGabarito questaoGabarito)
         {
             if (id != questaoGabarito.Id)
             {
@@ -118,7 +185,15 @@ namespace ProjetoEnade.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdProva"] = new SelectList(_context.Provas, "Id", "Id", questaoGabarito.IdProva);
+            var provas = from prova in _context.Provas.ToList()
+                         join curso in _context.Cursos.ToList() on prova.IdCurso equals curso.Id
+                         select new
+                         {
+                             Id = prova.Id,
+                             DescricaoCompleta = $"Ano: {prova.Ano} - Curso: {curso.Nome} - Edição: {prova.Edicao}"
+                         };
+
+            ViewData["DetalhesProva"] = new SelectList(provas, "Id", "DescricaoCompleta", null);
             return View(questaoGabarito);
         }
 

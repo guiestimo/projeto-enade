@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,10 +9,25 @@ namespace ProjetoEnade.Models
 {
     public class QuestaoGabarito : Base
     {
-        [Display(Name = "Ano da Prova")]
         public int IdProva { get; set; }
+
+        [Display(Name = "Prova")]
+        [NotMapped]
+        public string DescricaoProva { get; set; }
         public Provas Provas { get; set; }
         public string Enunciado { get; set; }
+
+        [Display(Name = "Tipo da Prova")]
+        public int TipoProva { get; set; }
+
+        [NotMapped]
+        public string DescricaoTipoProva { get; set; }
+
+        [Display(Name = "Dificuldade da Questão")]
+        public int DificuldadeQuestao { get; set; }
+
+        [NotMapped]
+        public string DescricaoDificuldadeQuestao { get; set; }
 
         [Display(Name = "Resposta A")]
         public string RespostaA { get; set; }
@@ -29,6 +45,9 @@ namespace ProjetoEnade.Models
         public string RespostaE { get; set; }
 
         [Display(Name = "Resposta Correta")]
-        public string RespostaCorreta { get; set; }
+        public int RespostaCorreta { get; set; }
+
+        [NotMapped]
+        public string DescricaoRespostaCorreta { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace ProjetoEnade.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

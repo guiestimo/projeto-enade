@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetoEnade.Repository;
 
 namespace ProjetoEnade.Migrations
 {
     [DbContext(typeof(EnadeDbContext))]
-    partial class EnadeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211119210118_InitialMigrations")]
+    partial class InitialMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,9 +115,6 @@ namespace ProjetoEnade.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DificuldadeQuestao")
-                        .HasColumnType("int");
-
                     b.Property<string>("Enunciado")
                         .HasColumnType("nvarchar(max)");
 
@@ -131,17 +130,14 @@ namespace ProjetoEnade.Migrations
                     b.Property<string>("RespostaC")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RespostaCorreta")
-                        .HasColumnType("int");
+                    b.Property<string>("RespostaCorreta")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RespostaD")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RespostaE")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoProva")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

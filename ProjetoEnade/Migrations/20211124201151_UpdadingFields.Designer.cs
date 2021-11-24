@@ -10,8 +10,8 @@ using ProjetoEnade.Repository;
 namespace ProjetoEnade.Migrations
 {
     [DbContext(typeof(EnadeDbContext))]
-    [Migration("20211030221849_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20211124201151_UpdadingFields")]
+    partial class UpdadingFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -115,6 +115,9 @@ namespace ProjetoEnade.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("DificuldadeQuestao")
+                        .HasColumnType("int");
+
                     b.Property<string>("Enunciado")
                         .HasColumnType("nvarchar(max)");
 
@@ -130,14 +133,17 @@ namespace ProjetoEnade.Migrations
                     b.Property<string>("RespostaC")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RespostaCorreta")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RespostaCorreta")
+                        .HasColumnType("int");
 
                     b.Property<string>("RespostaD")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RespostaE")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoProva")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

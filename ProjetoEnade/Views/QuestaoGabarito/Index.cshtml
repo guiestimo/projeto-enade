@@ -1,37 +1,27 @@
 ﻿@model IEnumerable<ProjetoEnade.Models.QuestaoGabarito>
+@using ProjetoEnade.Utils
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Novo</a>
 </p>
-<table class="table">
+<table class="table col-lg-12">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Provas)
+                @Html.DisplayNameFor(model => model.DescricaoProva)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Enunciado)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RespostaA)
+                @Html.DisplayNameFor(model => model.TipoProva)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RespostaB)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RespostaC)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RespostaD)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RespostaE)
+                @Html.DisplayNameFor(model => model.DificuldadeQuestao)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.RespostaCorreta)
@@ -40,38 +30,30 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Provas.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Enunciado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RespostaA)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RespostaB)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RespostaC)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RespostaD)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RespostaE)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RespostaCorreta)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescricaoProva)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Enunciado)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescricaoTipoProva)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescricaoDificuldadeQuestao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DescricaoRespostaCorreta)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
