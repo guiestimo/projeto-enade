@@ -13,5 +13,7 @@ namespace ProjetoEnade.Models
         public string Descricao { get; set; }
         public Cursos Curso { get; set; }
         public List<CursoDisciplina> CursoDisciplina { get; set; }
+        public List<QuestoesDisciplinas> QuestoesDisciplinas { get; set; }
+
     }
 }

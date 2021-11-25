@@ -10,56 +10,74 @@
 <div>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Provas)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DescricaoProva)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Provas.Id)
-        </dd class>
-        <dt class = "col-sm-2">
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DescricaoProva)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Enunciado)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Enunciado)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TipoProva)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DescricaoTipoProva)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.QuestoesDisciplinas)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DescricaoDisciplinas)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DificuldadeQuestao)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DescricaoDificuldadeQuestao)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RespostaA)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RespostaA)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RespostaB)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RespostaB)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RespostaC)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RespostaC)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RespostaD)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RespostaD)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RespostaE)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.RespostaE)
-        </dd>
-        <dt class = "col-sm-2">
+        </dd>       
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.RespostaCorreta)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RespostaCorreta)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DescricaoRespostaCorreta)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Excluir" class="btn btn-danger" /> |

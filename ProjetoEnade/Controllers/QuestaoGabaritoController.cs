@@ -19,8 +19,6 @@ namespace ProjetoEnade.Controllers
         {
             _context = context;
         }
-
-        // GET: QuestaoGabarito
         public IActionResult Index()
         {
             var enadeDbContext = from questoes in _context.QuestaoGabarito.ToList()
@@ -39,7 +37,6 @@ namespace ProjetoEnade.Controllers
             return View(enadeDbContext.ToList());
         }
 
-        // GET: QuestaoGabarito/Details/5
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -64,6 +61,11 @@ namespace ProjetoEnade.Controllers
                                        RespostaC = questoes.RespostaC,
                                        RespostaD = questoes.RespostaD,
                                        RespostaE = questoes.RespostaE,
+                                       DescricaoDisciplinas = string.Join(',', from questoesDisciplinas in _context.QuestoesDisciplinas.ToList()
+                                                                               join disciplinas in _context.Disciplinas.ToList() on questoesDisciplinas.IdDisciplina equals disciplinas.Id
+                                                                               where questoesDisciplinas.IdQuestao == questoes.Id
+                                                                               select disciplinas.Nome)
+
                                    }).FirstOrDefault();
 
 
@@ -75,7 +77,6 @@ namespace ProjetoEnade.Controllers
             return View(questaoGabarito);
         }
 
-        // GET: QuestaoGabarito/Create
         public IActionResult Create()
         {
             var provas = from prova in _context.Provas.ToList()
@@ -86,34 +87,51 @@ namespace ProjetoEnade.Controllers
                              DescricaoCompleta = $"Ano: {prova.Ano} - Curso: {curso.Nome} - Edição: {prova.Edicao}"
                          };
 
+            var disciplinas = from disciplina in _context.Disciplinas.ToList()
+                              select new
+                              {
+                                  disciplina.Id,
+                                  DescricaoDisciplina = disciplina.Descricao
+                              };
+
             ViewData["DetalhesProva"] = new SelectList(provas, "Id", "DescricaoCompleta", null);
+            ViewData["Disciplinas"] = new SelectList(disciplinas, "Id", "DescricaoDisciplina", null);
+
             return View();
         }
 
-        // POST: QuestaoGabarito/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(QuestaoGabarito questaoGabarito)
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(questaoGabarito);
                 await _context.SaveChangesAsync();
+
+                foreach (var item in questaoGabarito.MultiDisciplinas)
+                {
+                    var questoesDisciplinas = new QuestoesDisciplinas { IdDisciplina = item, IdQuestao = questaoGabarito.Id };
+
+                    _context.Add(questoesDisciplinas);
+                }
+
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdProva"] = new SelectList(_context.Provas, "Id", "Id", questaoGabarito.IdProva);
             return View(questaoGabarito);
         }
 
-        // GET: QuestaoGabarito/Edit/5
         public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
 
             var questaoGabarito = (from questoes in _context.QuestaoGabarito.ToList()
                                    join provas in _context.Provas.ToList() on questoes.IdProva equals provas.Id
@@ -135,6 +153,10 @@ namespace ProjetoEnade.Controllers
                                        RespostaC = questoes.RespostaC,
                                        RespostaD = questoes.RespostaD,
                                        RespostaE = questoes.RespostaE,
+                                       MultiDisciplinas = (from questoesDisciplinas in _context.QuestoesDisciplinas.ToList()
+                                                           join disciplinas in _context.Disciplinas.ToList() on questoesDisciplinas.IdDisciplina equals disciplinas.Id
+                                                           where questoesDisciplinas.IdQuestao == questoes.Id
+                                                           select questoesDisciplinas.IdDisciplina).ToList()
                                    }).FirstOrDefault();
 
             var provasCursos = from prova in _context.Provas.ToList()
@@ -145,17 +167,24 @@ namespace ProjetoEnade.Controllers
                                    DescricaoCompleta = $"Ano: {prova.Ano} - Curso: {curso.Nome} - Edição: {prova.Edicao}"
                                };
 
+            var disciplinas = from disciplina in _context.Disciplinas.ToList()
+                              select new
+                              {
+                                  disciplina.Id,
+                                  DescricaoDisciplina = disciplina.Descricao
+                              };
+
             if (questaoGabarito == null)
             {
                 return NotFound();
             }
+
             ViewData["DetalhesProva"] = new SelectList(provasCursos, "Id", "DescricaoCompleta", null);
+            ViewData["Disciplinas"] = new SelectList(disciplinas, "Id", "DescricaoDisciplina", null);
+
             return View(questaoGabarito);
         }
 
-        // POST: QuestaoGabarito/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, QuestaoGabarito questaoGabarito)
@@ -171,6 +200,22 @@ namespace ProjetoEnade.Controllers
                 {
                     _context.Update(questaoGabarito);
                     await _context.SaveChangesAsync();
+
+                    if (questaoGabarito.MultiDisciplinas.Any())
+                    {
+                        var questoesDisciplinasParaExcluir = _context.QuestoesDisciplinas.Where(x => x.IdQuestao == questaoGabarito.Id);
+                        _context.RemoveRange(questoesDisciplinasParaExcluir);
+
+                        foreach (var item in questaoGabarito.MultiDisciplinas)
+                        {
+                            var questoesDisciplinas = new QuestoesDisciplinas { IdDisciplina = item, IdQuestao = questaoGabarito.Id };
+
+                            _context.Add(questoesDisciplinas);
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -185,6 +230,7 @@ namespace ProjetoEnade.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             var provas = from prova in _context.Provas.ToList()
                          join curso in _context.Cursos.ToList() on prova.IdCurso equals curso.Id
                          select new
@@ -197,17 +243,37 @@ namespace ProjetoEnade.Controllers
             return View(questaoGabarito);
         }
 
-        // GET: QuestaoGabarito/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var questaoGabarito = await _context.QuestaoGabarito
-                .Include(q => q.Provas)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var questaoGabarito = (from questoes in _context.QuestaoGabarito.ToList()
+                                   join provas in _context.Provas.ToList() on questoes.IdProva equals provas.Id
+                                   join curso in _context.Cursos.ToList() on provas.IdCurso equals curso.Id
+                                   where questoes.Id == id
+                                   select new QuestaoGabarito
+                                   {
+                                       Id = questoes.Id,
+                                       Enunciado = questoes.Enunciado,
+                                       DescricaoTipoProva = Helpers.GetEnumDescription((Enums.TipoDaProva)questoes.TipoProva),
+                                       DescricaoDificuldadeQuestao = Helpers.GetEnumDescription((Enums.DificuldadeDaQuestao)questoes.DificuldadeQuestao),
+                                       DescricaoRespostaCorreta = Helpers.GetEnumDescription((Enums.RespostaCerta)questoes.RespostaCorreta),
+                                       DescricaoProva = $"Ano: {provas.Ano} - Curso: {curso.Nome} - Edição: {provas.Edicao}",
+                                       RespostaA = questoes.RespostaA,
+                                       RespostaB = questoes.RespostaB,
+                                       RespostaC = questoes.RespostaC,
+                                       RespostaD = questoes.RespostaD,
+                                       RespostaE = questoes.RespostaE,
+                                       DescricaoDisciplinas = string.Join(',', from questoesDisciplinas in _context.QuestoesDisciplinas.ToList()
+                                                                               join disciplinas in _context.Disciplinas.ToList() on questoesDisciplinas.IdDisciplina equals disciplinas.Id
+                                                                               where questoesDisciplinas.IdQuestao == questoes.Id
+                                                                               select disciplinas.Nome)
+
+                                   }).FirstOrDefault();
+
             if (questaoGabarito == null)
             {
                 return NotFound();
@@ -216,7 +282,6 @@ namespace ProjetoEnade.Controllers
             return View(questaoGabarito);
         }
 
-        // POST: QuestaoGabarito/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

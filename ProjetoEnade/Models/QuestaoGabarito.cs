@@ -17,7 +17,7 @@ namespace ProjetoEnade.Models
         public Provas Provas { get; set; }
         public string Enunciado { get; set; }
 
-        [Display(Name = "Tipo da Prova")]
+        [Display(Name = "Tipo da Questão")]
         public int TipoProva { get; set; }
 
         [NotMapped]
@@ -49,5 +49,16 @@ namespace ProjetoEnade.Models
 
         [NotMapped]
         public string DescricaoRespostaCorreta { get; set; }
+
+        [Display(Name = "Disciplinas")]
+        public List<QuestoesDisciplinas> QuestoesDisciplinas { get; set; }
+
+        [Display(Name = "Disciplinas")]
+        [NotMapped]
+        public List<int> MultiDisciplinas { get; set; }
+
+        [NotMapped]
+        public string DescricaoDisciplinas { get; set; }
+        public string RespostaDissertativa { get; set; }
     }
 }

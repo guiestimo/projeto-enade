@@ -19,6 +19,7 @@ namespace ProjetoEnade.Repository
         public DbSet<Disciplinas> Disciplinas { get; set; }
         public DbSet<CursoDisciplina> CursoDisciplina { get; set; }
         public DbSet<QuestaoGabarito> QuestaoGabarito { get; set; }
+        public DbSet<QuestoesDisciplinas> QuestoesDisciplinas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
