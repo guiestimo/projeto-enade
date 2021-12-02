@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -54,11 +55,50 @@ namespace ProjetoEnade.Models
         public List<QuestoesDisciplinas> QuestoesDisciplinas { get; set; }
 
         [Display(Name = "Disciplinas")]
+        [Required]
         [NotMapped]
         public List<int> MultiDisciplinas { get; set; }
 
         [NotMapped]
         public string DescricaoDisciplinas { get; set; }
+
+        [Display(Name = "Resposta Dissertativa")]
         public string RespostaDissertativa { get; set; }
+
+        [Display(Name = "Imagem do Enunciado")]
+        public byte[] EnunciadoImage { get; set; }
+
+        [NotMapped]
+        public string EnunciadoImageBase64 { get; set; }
+
+        [Display(Name = "Imagem da Resposta A")]
+        public byte[] RespostaAImage { get; set; }
+
+        [NotMapped]
+        public string RespostaAImageBase64 { get; set; }
+
+        [Display(Name = "Imagem da Resposta B")]
+        public byte[] RespostaBImage { get; set; }
+
+        [NotMapped]
+        public string RespostaBImageBase64 { get; set; }
+
+        [Display(Name = "Imagem da Resposta C")]
+        public byte[] RespostaCImage { get; set; }
+
+        [NotMapped]
+        public string RespostaCImageBase64 { get; set; }
+
+        [Display(Name = "Imagem da Resposta D")]
+        public byte[] RespostaDImage { get; set; }
+
+        [NotMapped]
+        public string RespostaDImageBase64 { get; set; }
+
+        [Display(Name = "Imagem da Resposta E")]
+        public byte[] RespostaEImage { get; set; }
+
+        [NotMapped]
+        public string RespostaEImageBase64 { get; set; }
     }
 }

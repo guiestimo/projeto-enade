@@ -119,17 +119,29 @@ namespace ProjetoEnade.Migrations
                     b.Property<string>("Enunciado")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("EnunciadoImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<int>("IdProva")
                         .HasColumnType("int");
 
                     b.Property<string>("RespostaA")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("RespostaAImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("RespostaB")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("RespostaBImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("RespostaC")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RespostaCImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("RespostaCorreta")
                         .HasColumnType("int");
@@ -137,11 +149,17 @@ namespace ProjetoEnade.Migrations
                     b.Property<string>("RespostaD")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("RespostaDImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("RespostaDissertativa")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RespostaE")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RespostaEImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("TipoProva")
                         .HasColumnType("int");

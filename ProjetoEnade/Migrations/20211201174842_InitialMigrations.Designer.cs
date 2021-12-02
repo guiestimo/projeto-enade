@@ -10,8 +10,8 @@ using ProjetoEnade.Repository;
 namespace ProjetoEnade.Migrations
 {
     [DbContext(typeof(EnadeDbContext))]
-    [Migration("20211125205222_RespostaDissertativa")]
-    partial class RespostaDissertativa
+    [Migration("20211201174842_InitialMigrations")]
+    partial class InitialMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,6 +120,9 @@ namespace ProjetoEnade.Migrations
 
                     b.Property<string>("Enunciado")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("EnunciadoImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("IdProva")
                         .HasColumnType("int");

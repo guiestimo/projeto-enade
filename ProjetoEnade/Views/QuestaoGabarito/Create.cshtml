@@ -12,15 +12,18 @@
                 $("#RespostaC").val('');
                 $("#RespostaD").val('');
                 $("#RespostaE").val('');
+                $("#RespostaCorreta").val(0);
                 $("#multiplaEscolha").hide("slow");
-                $("#dissertativa").show()("slow");
+                $("#multiplaEscolhaResposta").hide("slow");
+                $("#dissertativa").show("slow");
 
             } else if (selectValue == 2) {
                 $("#RespostaDissertativa").val('');
                 $("#multiplaEscolha").show("slow");
-                $("#dissertativa").hide()("slow");
+                $("#multiplaEscolhaResposta").show("slow");
+                $("#dissertativa").hide("slow");
             }
-        });
+        });      
     });
 </script>
 
@@ -33,7 +36,7 @@
 <hr />
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DescricaoProva" class="control-label"></label>
@@ -46,6 +49,7 @@
             <div class="form-group">
                 <label asp-for="MultiDisciplinas" class="control-label"></label>
                 <select asp-for="MultiDisciplinas" class="form-control" asp-items="ViewBag.Disciplinas" multiple></select>
+                <span asp-validation-for="MultiDisciplinas" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DificuldadeQuestao" class="control-label"></label>
@@ -57,6 +61,11 @@
                 <span asp-validation-for="Enunciado" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="EnunciadoImage" class="control-label"></label>
+                <input type="file" id="enunciadoImage" name="enunciadoImage" accept="image/*" />
+            </div>
+
             <div id="multiplaEscolha" style="display:none">
                 <div class="form-group">
                     <label asp-for="RespostaA" class="control-label"></label>
@@ -64,9 +73,17 @@
                     <span asp-validation-for="RespostaA" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    <label asp-for="RespostaAImage" class="control-label"></label>
+                    <input type="file" id="respostaAImage" name="respostaAImage" accept="image/*" />
+                </div>
+                <div class="form-group">
                     <label asp-for="RespostaB" class="control-label"></label>
                     <input asp-for="RespostaB" class="form-control" />
                     <span asp-validation-for="RespostaB" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RespostaBImage" class="control-label"></label>
+                    <input type="file" id="respostaBImage" name="respostaBImage" accept="image/*" />
                 </div>
                 <div class="form-group">
                     <label asp-for="RespostaC" class="control-label"></label>
@@ -74,14 +91,26 @@
                     <span asp-validation-for="RespostaC" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    <label asp-for="RespostaCImage" class="control-label"></label>
+                    <input type="file" id="respostaCImage" name="respostaCImage" accept="image/*" />
+                </div>
+                <div class="form-group">
                     <label asp-for="RespostaD" class="control-label"></label>
                     <input asp-for="RespostaD" class="form-control" />
                     <span asp-validation-for="RespostaD" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    <label asp-for="RespostaDImage" class="control-label"></label>
+                    <input type="file" id="respostaDImage" name="respostaDImage" accept="image/*" />
+                </div>
+                <div class="form-group">
                     <label asp-for="RespostaE" class="control-label"></label>
                     <input asp-for="RespostaE" class="form-control" />
                     <span asp-validation-for="RespostaE" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="RespostaEImage" class="control-label"></label>
+                    <input type="file" id="respostaEImage" name="respostaEImage" accept="image/*" />
                 </div>
             </div>
             <div id="dissertativa">
@@ -91,10 +120,13 @@
                     <span asp-validation-for="RespostaDissertativa" class="text-danger"></span>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="RespostaCorreta" class="control-label"></label>
-                <select asp-for="RespostaCorreta" class="form-control" asp-items="Html.GetEnumSelectList<Enums.RespostaCerta>()"></select>
+            <div id="multiplaEscolhaResposta" style="display:none">
+                <div class="form-group">
+                    <label asp-for="RespostaCorreta" class="control-label"></label>
+                    <select asp-for="RespostaCorreta" class="form-control" asp-items="Html.GetEnumSelectList<Enums.RespostaCerta>()">
+                        <option value="0">Selecione uma resposta</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Criar" class="btn btn-primary" />

@@ -10,8 +10,8 @@ using ProjetoEnade.Repository;
 namespace ProjetoEnade.Migrations
 {
     [DbContext(typeof(EnadeDbContext))]
-    [Migration("20211124201151_UpdadingFields")]
-    partial class UpdadingFields
+    [Migration("20211201201816_ImagesMigrationss")]
+    partial class ImagesMigrationss
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,17 +121,29 @@ namespace ProjetoEnade.Migrations
                     b.Property<string>("Enunciado")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("EnunciadoImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<int>("IdProva")
                         .HasColumnType("int");
 
                     b.Property<string>("RespostaA")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("RespostaAImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("RespostaB")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("RespostaBImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("RespostaC")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RespostaCImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("RespostaCorreta")
                         .HasColumnType("int");
@@ -139,8 +151,17 @@ namespace ProjetoEnade.Migrations
                     b.Property<string>("RespostaD")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("RespostaDImage")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("RespostaDissertativa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RespostaE")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RespostaEImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("TipoProva")
                         .HasColumnType("int");
@@ -150,6 +171,28 @@ namespace ProjetoEnade.Migrations
                     b.HasIndex("IdProva");
 
                     b.ToTable("QuestaoGabarito");
+                });
+
+            modelBuilder.Entity("ProjetoEnade.Models.QuestoesDisciplinas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IdDisciplina")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdQuestao")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdDisciplina");
+
+                    b.HasIndex("IdQuestao");
+
+                    b.ToTable("QuestoesDisciplinas");
                 });
 
             modelBuilder.Entity("ProjetoEnade.Models.CursoDisciplina", b =>
@@ -202,6 +245,25 @@ namespace ProjetoEnade.Migrations
                     b.Navigation("Provas");
                 });
 
+            modelBuilder.Entity("ProjetoEnade.Models.QuestoesDisciplinas", b =>
+                {
+                    b.HasOne("ProjetoEnade.Models.Disciplinas", "Disciplinas")
+                        .WithMany("QuestoesDisciplinas")
+                        .HasForeignKey("IdDisciplina")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjetoEnade.Models.QuestaoGabarito", "Questoes")
+                        .WithMany("QuestoesDisciplinas")
+                        .HasForeignKey("IdQuestao")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disciplinas");
+
+                    b.Navigation("Questoes");
+                });
+
             modelBuilder.Entity("ProjetoEnade.Models.Cursos", b =>
                 {
                     b.Navigation("CursoDisciplina");
@@ -212,11 +274,18 @@ namespace ProjetoEnade.Migrations
             modelBuilder.Entity("ProjetoEnade.Models.Disciplinas", b =>
                 {
                     b.Navigation("CursoDisciplina");
+
+                    b.Navigation("QuestoesDisciplinas");
                 });
 
             modelBuilder.Entity("ProjetoEnade.Models.Provas", b =>
                 {
                     b.Navigation("QuestoesGabarito");
+                });
+
+            modelBuilder.Entity("ProjetoEnade.Models.QuestaoGabarito", b =>
+                {
+                    b.Navigation("QuestoesDisciplinas");
                 });
 #pragma warning restore 612, 618
         }

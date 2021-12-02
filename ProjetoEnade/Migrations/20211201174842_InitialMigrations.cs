@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProjetoEnade.Migrations
 {
@@ -96,12 +97,16 @@ namespace ProjetoEnade.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdProva = table.Column<int>(type: "int", nullable: false),
                     Enunciado = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TipoProva = table.Column<int>(type: "int", nullable: false),
+                    DificuldadeQuestao = table.Column<int>(type: "int", nullable: false),
                     RespostaA = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RespostaB = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RespostaC = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RespostaD = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RespostaE = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RespostaCorreta = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    RespostaCorreta = table.Column<int>(type: "int", nullable: false),
+                    RespostaDissertativa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EnunciadoImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,6 +115,32 @@ namespace ProjetoEnade.Migrations
                         name: "FK_QuestaoGabarito_Provas_IdProva",
                         column: x => x.IdProva,
                         principalTable: "Provas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuestoesDisciplinas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdQuestao = table.Column<int>(type: "int", nullable: false),
+                    IdDisciplina = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestoesDisciplinas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuestoesDisciplinas_Disciplinas_IdDisciplina",
+                        column: x => x.IdDisciplina,
+                        principalTable: "Disciplinas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestoesDisciplinas_QuestaoGabarito_IdQuestao",
+                        column: x => x.IdQuestao,
+                        principalTable: "QuestaoGabarito",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -139,6 +170,16 @@ namespace ProjetoEnade.Migrations
                 name: "IX_QuestaoGabarito_IdProva",
                 table: "QuestaoGabarito",
                 column: "IdProva");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestoesDisciplinas_IdDisciplina",
+                table: "QuestoesDisciplinas",
+                column: "IdDisciplina");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestoesDisciplinas_IdQuestao",
+                table: "QuestoesDisciplinas",
+                column: "IdQuestao");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -147,10 +188,13 @@ namespace ProjetoEnade.Migrations
                 name: "CursoDisciplina");
 
             migrationBuilder.DropTable(
-                name: "QuestaoGabarito");
+                name: "QuestoesDisciplinas");
 
             migrationBuilder.DropTable(
                 name: "Disciplinas");
+
+            migrationBuilder.DropTable(
+                name: "QuestaoGabarito");
 
             migrationBuilder.DropTable(
                 name: "Provas");

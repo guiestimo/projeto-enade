@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,9 @@ namespace ProjetoEnade.Controllers
         }
         public IActionResult Index()
         {
+            var teste = from questoes in _context.QuestaoGabarito.ToList()
+                        select questoes;
+
             var enadeDbContext = from questoes in _context.QuestaoGabarito.ToList()
                                  join provas in _context.Provas.ToList() on questoes.IdProva equals provas.Id
                                  join curso in _context.Cursos.ToList() on provas.IdCurso equals curso.Id
@@ -61,6 +65,19 @@ namespace ProjetoEnade.Controllers
                                        RespostaC = questoes.RespostaC,
                                        RespostaD = questoes.RespostaD,
                                        RespostaE = questoes.RespostaE,
+                                       EnunciadoImage = questoes.EnunciadoImage,
+                                       EnunciadoImageBase64 = questoes.EnunciadoImage != null ? Convert.ToBase64String(questoes.EnunciadoImage) : null,
+                                       RespostaAImage = questoes.RespostaAImage,
+                                       RespostaAImageBase64 = questoes.RespostaAImage != null ? Convert.ToBase64String(questoes.RespostaAImage) : null,
+                                       RespostaBImage = questoes.RespostaBImage,
+                                       RespostaBImageBase64 = questoes.RespostaBImage != null ? Convert.ToBase64String(questoes.RespostaBImage) : null,
+                                       RespostaCImage = questoes.RespostaCImage,
+                                       RespostaCImageBase64 = questoes.RespostaCImage != null ? Convert.ToBase64String(questoes.RespostaCImage) : null,
+                                       RespostaDImage = questoes.RespostaDImage,
+                                       RespostaDImageBase64 = questoes.RespostaDImage != null ? Convert.ToBase64String(questoes.RespostaDImage) : null,
+                                       RespostaEImage = questoes.RespostaEImage,
+                                       RespostaEImageBase64 = questoes.RespostaEImage != null ? Convert.ToBase64String(questoes.RespostaEImage) : null,
+                                       RespostaDissertativa = questoes.RespostaDissertativa,
                                        DescricaoDisciplinas = string.Join(',', from questoesDisciplinas in _context.QuestoesDisciplinas.ToList()
                                                                                join disciplinas in _context.Disciplinas.ToList() on questoesDisciplinas.IdDisciplina equals disciplinas.Id
                                                                                where questoesDisciplinas.IdQuestao == questoes.Id
@@ -73,6 +90,20 @@ namespace ProjetoEnade.Controllers
             {
                 return NotFound();
             }
+
+            string enunciadoImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.EnunciadoImageBase64);
+            string respostaAImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaAImageBase64);
+            string respostaBImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaBImageBase64);
+            string respostaCImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaCImageBase64);
+            string respostaDImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaDImageBase64);
+            string respostaEImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaEImageBase64);
+
+            ViewData["EnunciadoImageDataURL"] = enunciadoImageDataURL;
+            ViewData["RespostaAImageDataURL"] = respostaAImageDataURL;
+            ViewData["RespostaBImageDataURL"] = respostaBImageDataURL;
+            ViewData["RespostaCImageDataURL"] = respostaCImageDataURL;
+            ViewData["RespostaDImageDataURL"] = respostaDImageDataURL;
+            ViewData["RespostaEImageDataURL"] = respostaEImageDataURL;
 
             return View(questaoGabarito);
         }
@@ -106,6 +137,38 @@ namespace ProjetoEnade.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                foreach (var file in Request.Form.Files)
+                {
+                    MemoryStream ms = new();
+                    file.CopyTo(ms);
+
+                    switch (file.Name)
+                    {
+                        case "enunciadoImage":
+                            questaoGabarito.EnunciadoImage = ms.ToArray();
+                            break;
+                        case "respostaAImage":
+                            questaoGabarito.RespostaAImage = ms.ToArray();
+                            break;
+                        case "respostaBImage":
+                            questaoGabarito.RespostaBImage = ms.ToArray();
+                            break;
+                        case "respostaCImage":
+                            questaoGabarito.RespostaCImage = ms.ToArray();
+                            break;
+                        case "respostaDImage":
+                            questaoGabarito.RespostaDImage = ms.ToArray();
+                            break;
+                        default:
+                            questaoGabarito.RespostaEImage = ms.ToArray();
+                            break;
+                    }
+
+
+                    ms.Close();
+                    ms.Dispose();
+                }
 
                 _context.Add(questaoGabarito);
                 await _context.SaveChangesAsync();
@@ -153,6 +216,7 @@ namespace ProjetoEnade.Controllers
                                        RespostaC = questoes.RespostaC,
                                        RespostaD = questoes.RespostaD,
                                        RespostaE = questoes.RespostaE,
+                                       RespostaDissertativa = questoes.RespostaDissertativa,
                                        MultiDisciplinas = (from questoesDisciplinas in _context.QuestoesDisciplinas.ToList()
                                                            join disciplinas in _context.Disciplinas.ToList() on questoesDisciplinas.IdDisciplina equals disciplinas.Id
                                                            where questoesDisciplinas.IdQuestao == questoes.Id
@@ -172,13 +236,13 @@ namespace ProjetoEnade.Controllers
                               {
                                   disciplina.Id,
                                   DescricaoDisciplina = disciplina.Descricao
-                              };
+                              };            
 
             if (questaoGabarito == null)
             {
                 return NotFound();
             }
-
+            
             ViewData["DetalhesProva"] = new SelectList(provasCursos, "Id", "DescricaoCompleta", null);
             ViewData["Disciplinas"] = new SelectList(disciplinas, "Id", "DescricaoDisciplina", null);
 
@@ -198,6 +262,37 @@ namespace ProjetoEnade.Controllers
             {
                 try
                 {
+                    foreach (var file in Request.Form.Files)
+                    {
+                        MemoryStream ms = new();
+                        file.CopyTo(ms);
+
+                        switch (file.Name)
+                        {
+                            case "enunciadoImage":
+                                questaoGabarito.EnunciadoImage = ms.ToArray();
+                                break;
+                            case "respostaAImage":
+                                questaoGabarito.RespostaAImage = ms.ToArray();
+                                break;
+                            case "respostaBImage":
+                                questaoGabarito.RespostaBImage = ms.ToArray();
+                                break;
+                            case "respostaCImage":
+                                questaoGabarito.RespostaCImage = ms.ToArray();
+                                break;
+                            case "respostaDImage":
+                                questaoGabarito.RespostaDImage = ms.ToArray();
+                                break;
+                            default:
+                                questaoGabarito.RespostaEImage = ms.ToArray();
+                                break;
+                        }
+
+                        ms.Close();
+                        ms.Dispose();
+                    }
+
                     _context.Update(questaoGabarito);
                     await _context.SaveChangesAsync();
 
@@ -230,6 +325,10 @@ namespace ProjetoEnade.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+             
+            var teste = ModelState.Select(x => x.Value.Errors)
+                           .Where(y => y.Count > 0)
+                           .ToList();
 
             var provas = from prova in _context.Provas.ToList()
                          join curso in _context.Cursos.ToList() on prova.IdCurso equals curso.Id
@@ -267,6 +366,19 @@ namespace ProjetoEnade.Controllers
                                        RespostaC = questoes.RespostaC,
                                        RespostaD = questoes.RespostaD,
                                        RespostaE = questoes.RespostaE,
+                                       EnunciadoImage = questoes.EnunciadoImage,
+                                       EnunciadoImageBase64 = questoes.EnunciadoImage != null ? Convert.ToBase64String(questoes.EnunciadoImage) : null,
+                                       RespostaAImage = questoes.RespostaAImage,
+                                       RespostaAImageBase64 = questoes.RespostaAImage != null ? Convert.ToBase64String(questoes.RespostaAImage) : null,
+                                       RespostaBImage = questoes.RespostaBImage,
+                                       RespostaBImageBase64 = questoes.RespostaBImage != null ? Convert.ToBase64String(questoes.RespostaBImage) : null,
+                                       RespostaCImage = questoes.RespostaCImage,
+                                       RespostaCImageBase64 = questoes.RespostaCImage != null ? Convert.ToBase64String(questoes.RespostaCImage) : null,
+                                       RespostaDImage = questoes.RespostaDImage,
+                                       RespostaDImageBase64 = questoes.RespostaDImage != null ? Convert.ToBase64String(questoes.RespostaDImage) : null,
+                                       RespostaEImage = questoes.RespostaEImage,
+                                       RespostaEImageBase64 = questoes.RespostaEImage != null ? Convert.ToBase64String(questoes.RespostaEImage) : null,
+                                       RespostaDissertativa = questoes.RespostaDissertativa,
                                        DescricaoDisciplinas = string.Join(',', from questoesDisciplinas in _context.QuestoesDisciplinas.ToList()
                                                                                join disciplinas in _context.Disciplinas.ToList() on questoesDisciplinas.IdDisciplina equals disciplinas.Id
                                                                                where questoesDisciplinas.IdQuestao == questoes.Id
@@ -278,6 +390,20 @@ namespace ProjetoEnade.Controllers
             {
                 return NotFound();
             }
+
+            string enunciadoImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.EnunciadoImageBase64);
+            string respostaAImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaAImageBase64);
+            string respostaBImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaBImageBase64);
+            string respostaCImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaCImageBase64);
+            string respostaDImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaDImageBase64);
+            string respostaEImageDataURL = string.Format("data:image/jpg;base64,{0}", questaoGabarito.RespostaEImageBase64);
+
+            ViewData["EnunciadoImageDataURL"] = enunciadoImageDataURL;
+            ViewData["RespostaAImageDataURL"] = respostaAImageDataURL;
+            ViewData["RespostaBImageDataURL"] = respostaBImageDataURL;
+            ViewData["RespostaCImageDataURL"] = respostaCImageDataURL;
+            ViewData["RespostaDImageDataURL"] = respostaDImageDataURL;
+            ViewData["RespostaEImageDataURL"] = respostaEImageDataURL;
 
             return View(questaoGabarito);
         }

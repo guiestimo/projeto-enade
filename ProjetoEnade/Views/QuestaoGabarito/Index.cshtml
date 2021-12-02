@@ -23,9 +23,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.DificuldadeQuestao)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RespostaCorreta)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -44,9 +41,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DescricaoDificuldadeQuestao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DescricaoRespostaCorreta)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
