@@ -163,3 +163,8 @@ C:\projects\.NET\ProjetoEnade\ProjetoEnade\obj\Debug\net5.0\Razor\Views\QuestaoG
 C:\projects\.NET\ProjetoEnade\ProjetoEnade\obj\Debug\net5.0\Razor\Views\QuestaoGabarito\Details.cshtml.g.cs
 C:\projects\.NET\ProjetoEnade\ProjetoEnade\obj\Debug\net5.0\Razor\Views\QuestaoGabarito\Edit.cshtml.g.cs
 C:\projects\.NET\ProjetoEnade\ProjetoEnade\obj\Debug\net5.0\Razor\Views\QuestaoGabarito\Index.cshtml.g.cs
+C:\projects\.NET\ProjetoEnade\ProjetoEnade\obj\Debug\net5.0\Razor\Views\Relatorio\Index.cshtml.g.cs
+C:\projects\.NET\ProjetoEnade\ProjetoEnade\bin\Debug\net5.0\ClosedXML.dll
+C:\projects\.NET\ProjetoEnade\ProjetoEnade\bin\Debug\net5.0\DocumentFormat.OpenXml.dll
+C:\projects\.NET\ProjetoEnade\ProjetoEnade\bin\Debug\net5.0\ExcelNumberFormat.dll
+C:\projects\.NET\ProjetoEnade\ProjetoEnade\bin\Debug\net5.0\System.IO.Packaging.dll
